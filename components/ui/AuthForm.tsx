@@ -22,12 +22,14 @@ import {
   FieldTitle,
 } from "@/components/ui/field"; 
 import CustomInputs from './CustomInputs';
-import { formSchema } from '@/lib/utils';
+import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
-const authForm = ({type}: {type:String}) => {
+const authForm = ({type}: {type: string}) => {
     const [user, setUser] = useState(null);  
     const [isLoading, setIsLoading] = useState(false); 
+
+    const formSchema = authFormSchema(type); 
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema), 
