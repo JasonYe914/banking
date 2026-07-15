@@ -25,13 +25,12 @@ import {
 import CustomInputs from './CustomInputs';
 import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import {signUp, signIn} from '@/lib/actions/user.actions'
+import {signUp, signIn, getLoggedInUser} from '@/lib/actions/user.actions'
 
 const authForm = ({type}: {type: string}) => {
     const router = useRouter(); 
     const [user, setUser] = useState(null);  
     const [isLoading, setIsLoading] = useState(false); 
-
     const formSchema = authFormSchema(type); 
 
     const form = useForm<z.infer<typeof formSchema>>({
