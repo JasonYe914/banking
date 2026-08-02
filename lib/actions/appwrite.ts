@@ -3,7 +3,7 @@
 import { Client, Account, Databases, Users } from "node-appwrite";
 import { cookies } from "next/headers";
 
-
+//authentication/session token stuff 
 export async function createSessionClient() {
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
@@ -30,12 +30,12 @@ export async function createSessionClient() {
   };
 }
 
+//allows access to the database 
 export async function createAdminClient() {
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)
     .setKey(process.env.APPWRITE_SECRET!);
-
   return {
     get account() {
       return new Account(client);
