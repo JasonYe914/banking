@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {useState} from "react"; 
+import PlaidLink from './PlaidLink';
 
 import {email, z} from "zod"; 
 import {zodResolver} from "@hookform/resolvers/zod"; 
@@ -91,9 +92,11 @@ const authForm = ({type}: {type: string}) => {
                     </p>
                 </div>
             </header>
-            {user ? (<div className="flex flex-col gap-4">
-                
-            </div>) : <>
+            {/* {user ? ( */}
+            <div className="flex flex-col gap-4">
+                <PlaidLink user={user} variant="primary" /> 
+            </div>
+            {/* ) : <> */}
                 <form onSubmit={form.handleSubmit(onSubmit)} 
                     className="space-y-8" id="form-rhf-demo">
                         {type === 'Sign-Up' && (<> 
@@ -182,7 +185,7 @@ const authForm = ({type}: {type: string}) => {
                             {type === 'Sign-In' ? 'Sign Up' : 'Sign In'}
                     </Link>
                 </footer>
-            </>}
+            {/* </>} */}
         </section>
     )
 }
