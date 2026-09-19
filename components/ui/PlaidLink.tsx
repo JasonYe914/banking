@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from "react-plaid-link";
 import { useRouter } from "next/navigation";
 import { createLinkToken } from "@/lib/actions/user.actions";
+import { exchangePublicToken } from "@/lib/actions/user.actions";
 
 const plaidLink = ({user, variant}: PlaidLinkProps) => {
     const router = useRouter(); 
@@ -20,11 +21,13 @@ const plaidLink = ({user, variant}: PlaidLinkProps) => {
     }, [user]); 
     
     //useCallback prevents child components from re-rendering by caching function b/w states
-    const onSuccess = useCallback<PlaidLinkOnSuccess>(async (public_token: string) => {
-        // await exchangePublicToken({
-        //     publicToken: public_token,
-        //     user, 
-        // });
+    const onSuccess = useCallback<PlaidLinkOnSuccess>(async (public_token: string | null) => {
+        if (!public_token) return;
+
+        await exchangePublicToken({
+            publicToken: public_token,
+            user, 
+        });
         router.push('/');
     }, [user]); 
 

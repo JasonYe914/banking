@@ -57,7 +57,19 @@ const authForm = ({type}: {type: string}) => {
                 }
             }
             if(type === 'Sign-Up'){
-                const newUser = await signUp(values);
+                const userData = {
+                    firstName: values.FirstName!, 
+                    lastName: values.LastName!, 
+                    address1: values.Address!, 
+                    city: values.City!, 
+                    state: values.State!, 
+                    postalCode: values.PostalCode!, 
+                    dateOfBirth: values.DateofBirth!, 
+                    ssn: values.SSN!,
+                    email: values.email!, 
+                    password: values.password!,  
+                }
+                const newUser = await signUp(userData);
                 setUser(newUser); 
             }
         }catch(error){
@@ -92,11 +104,11 @@ const authForm = ({type}: {type: string}) => {
                     </p>
                 </div>
             </header>
-            {/* {user ? ( */}
+            {user ? (
             <div className="flex flex-col gap-4">
                 <PlaidLink user={user} variant="primary" /> 
             </div>
-            {/* ) : <> */}
+             ) : <> 
                 <form onSubmit={form.handleSubmit(onSubmit)} 
                     className="space-y-8" id="form-rhf-demo">
                         {type === 'Sign-Up' && (<> 
@@ -185,7 +197,7 @@ const authForm = ({type}: {type: string}) => {
                             {type === 'Sign-In' ? 'Sign Up' : 'Sign In'}
                     </Link>
                 </footer>
-            {/* </>} */}
+            </>}
         </section>
     )
 }

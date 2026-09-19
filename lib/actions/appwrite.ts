@@ -1,6 +1,6 @@
 // src/lib/server/appwrite.js
 "use server";
-import { Client, Account, Databases, Users } from "node-appwrite";
+import { Client, Account, Databases, Users, TablesDB } from "node-appwrite";
 import { cookies } from "next/headers";
 
 //authentication/session token stuff 
@@ -36,9 +36,14 @@ export async function createAdminClient() {
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)
     .setKey(process.env.APPWRITE_SECRET!);
+
+  //const tablesDB = new TablesDB(client); 
   return {
     get account() {
       return new Account(client);
+    },
+    get tablesDB() {
+      return new TablesDB(client);
     },
   };
 }
