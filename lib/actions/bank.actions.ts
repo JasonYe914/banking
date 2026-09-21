@@ -12,7 +12,7 @@ import {
 import { plaidClient } from "./plaid";
 import { parseStringify } from "../utils";
 
-import { getTransactionsByBankId } from "./transaction.actions";
+import { getTransactionsByBankId } from "./transactions.actions";
 import { getBanks, getBank } from "./user.actions";
 
 // Get multiple bank accounts
@@ -68,6 +68,10 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
   try {
     // get bank from db
     const bank = await getBank({ documentId: appwriteItemId });
+    if (!bank) {
+      console.error("getAccount: no bank found for id", appwriteItemId);
+      return;
+    }
 
     // get account info from plaid
     const accountsResponse = await plaidClient.accountsGet({
@@ -97,9 +101,8 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       institutionId: accountsResponse.data.item.institution_id!,
     });
 
-    const transactions = await getTransactions({
-      accessToken: bank?.accessToken,
-    });
+    const transactions: Partial<Transaction>[] =
+      (await getTransactions({ accessToken: bank?.accessToken })) ?? [];
 
     const account = {
       id: accountData.account_id,
@@ -151,18 +154,20 @@ export const getTransactions = async ({
   accessToken,
 }: getTransactionsProps) => {
   let hasMore = true;
-  let transactions: any = [];
+  let cursor: string | undefined = undefined;
+  let transactions: Partial<Transaction>[] = [];
 
   try {
     // Iterate through each page of new transaction updates for item
     while (hasMore) {
       const response = await plaidClient.transactionsSync({
         access_token: accessToken,
+        cursor,
       });
 
       const data = response.data;
 
-      transactions = response.data.added.map((transaction) => ({
+      const added: Partial<Transaction>[] = data.added.map((transaction) => ({
         id: transaction.transaction_id,
         name: transaction.name,
         paymentChannel: transaction.payment_channel,
@@ -172,14 +177,23 @@ export const getTransactions = async ({
         pending: transaction.pending,
         category: transaction.category ? transaction.category[0] : "",
         date: transaction.date,
-        image: transaction.logo_url,
+        image: transaction.logo_url ?? "",
       }));
 
+      transactions = [...transactions, ...added];
+      cursor = data.next_cursor;
       hasMore = data.has_more;
     }
 
     return parseStringify(transactions);
-  } catch (error) {
-    console.error("An error occurred while getting the accounts:", error);
+  } catch (error: any) {
+    // Plaid returns ADDITIONAL_CONSENT_REQUIRED when the item was linked
+    // without the "transactions" product. Fall back to no Plaid transactions
+    // so the page still renders with the transfer rows from Appwrite.
+    console.error(
+      "An error occurred while getting transactions:",
+      error?.response?.data ?? error
+    );
+    return [];
   }
 };

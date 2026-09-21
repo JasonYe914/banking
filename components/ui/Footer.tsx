@@ -2,7 +2,7 @@ import Image from "next/image";
 import { logoutAccount } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
-const footer = ({user, type = 'desktop'}: FooterProps) => {
+const Footer = ({user, type = 'desktop'}: FooterProps) => {
     const router = useRouter();
     const handleLogout = async () => {
         const logout = await logoutAccount(); 
@@ -32,4 +32,4 @@ const footer = ({user, type = 'desktop'}: FooterProps) => {
     )
 }
 
-export default footer; 
+export default Footer; 

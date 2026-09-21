@@ -1,5 +1,5 @@
 'use server'; 
-import { Client, ID } from "node-appwrite";
+import { Client, ID, Query } from "node-appwrite";
 import { createAdminClient } from "./appwrite";
 import { cookies } from "next/headers";
 import { createSessionClient } from "./appwrite";
@@ -9,7 +9,6 @@ import { plaidClient } from "./plaid";
 import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 import { encryptId } from "../utils";
 import { revalidatePath } from "next/cache";
-import { User } from "lucide-react";
 
 const { 
     APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -23,11 +22,9 @@ export const getUserInfo = async({userId}: getUserInfoProps) => {
         const user = await tablesDB.listRows({
             databaseId: DATABASE_ID!,
             tableId: USERS_COLLECTION_ID!,
-            queries: [
-                `userId=${userId}`,
-            ],
+            queries: [Query.equal("userId", userId)],
         })
-        return parseStringify(user);
+        return parseStringify(user.rows[0]);
     }catch(error){
         console.error("Error getting user info", error);
     }
@@ -182,7 +179,7 @@ export const createLinkToken = async(user: User) => {
                 
             },
             client_name: `${user.firstName} ${user.lastName}`,
-            products: ['auth'] as Products[], 
+            products: ['auth', 'transactions'] as Products[], 
             language: 'en', 
             country_codes: ['US'] as CountryCode[], 
         } 
@@ -255,11 +252,9 @@ export const getBanks = async ({userId}: getBanksProps) => {
         const banks = await tablesDB.listRows({
             databaseId: DATABASE_ID!,
             tableId: BANK_COLLECTION_ID!,
-            queries: [
-                `userId=${userId}`,
-            ],
+            queries: [Query.equal("userId", userId)],
         })
-        return parseStringify(banks);
+        return parseStringify(banks.rows);
     }catch(error){
         console.log("Error getting banks", error);
     }
@@ -268,12 +263,10 @@ export const getBanks = async ({userId}: getBanksProps) => {
 export const getBank = async ({documentId}: getBankProps) => {
     try{
         const { tablesDB } = await createAdminClient();
-        const bank = await tablesDB.listRows({
+        const bank = await tablesDB.getRow({
             databaseId: DATABASE_ID!,
             tableId: BANK_COLLECTION_ID!,
-            queries: [
-                `id=${documentId}`,
-            ],
+            rowId: documentId,
         })
         return parseStringify(bank);
     }catch(error){
