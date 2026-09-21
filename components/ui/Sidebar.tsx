@@ -7,7 +7,7 @@ import { sidebarLinks } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Footer from "./Footer";
 
-const sideBar = ({user}: SiderbarProps) => { 
+const SideBar = ({user}: SiderbarProps) => { 
     const pathname = usePathname();
     return (
         <section className="sidebar ">
@@ -68,4 +68,4 @@ const sideBar = ({user}: SiderbarProps) => {
 }
 
 
-export default sideBar;
+export default SideBar;

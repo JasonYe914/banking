@@ -28,7 +28,7 @@ import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import {signUp, signIn, getLoggedInUser} from '@/lib/actions/user.actions'
 
-const authForm = ({type}: {type: string}) => {
+const AuthForm = ({type}: {type: string}) => {
     const router = useRouter(); 
     const [user, setUser] = useState(null);  
     const [isLoading, setIsLoading] = useState(false); 
@@ -202,4 +202,4 @@ const authForm = ({type}: {type: string}) => {
     )
 }
 
-export default authForm; 
+export default AuthForm; 

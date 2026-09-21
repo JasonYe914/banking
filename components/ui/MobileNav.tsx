@@ -17,7 +17,7 @@ import { usePathname } from "next/navigation";
 import {cn} from "@/lib/utils"; 
 import Footer from "./Footer";
 
-const mobileNavbar = ({user}: MobileNavProps) => {
+const MobileNavbar = ({user}: MobileNavProps) => {
     const pathname = usePathname(); 
     return (
         <section className="w-full max-w-[264px]"> 
@@ -92,4 +92,4 @@ const mobileNavbar = ({user}: MobileNavProps) => {
     )
 }
 
-export default mobileNavbar; 
+export default MobileNavbar; 
