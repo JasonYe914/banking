@@ -1,5 +1,5 @@
 import HeaderBox from "@/components/ui/HeaderBox";
-import { getLoggedInUser } from "@/lib/actions/user.actions"; 
+import { requireLoggedInUser } from "@/lib/actions/user.actions"; 
 import { getAccounts, getAccount } from "@/lib/actions/bank.actions";
 import { formatAmount } from "@/lib/utils";
 import TransactionsTable from "@/components/ui/TransactionsTable";
@@ -7,7 +7,7 @@ import TransactionsTable from "@/components/ui/TransactionsTable";
 const transactionHistory = async ({searchParams}: SearchParamProps) => {
     const {id, page} = await searchParams;
     const currentPage = parseInt(page as string) || 1; 
-    const loggedIn = await getLoggedInUser();
+    const loggedIn = await requireLoggedInUser();
     const accounts = await getAccounts({userId: loggedIn.$id});
     
     if(!accounts) return; 

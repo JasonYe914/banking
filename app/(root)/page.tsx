@@ -2,14 +2,14 @@ import react from "react";
 import HeaderBox from "@/components/ui/HeaderBox";
 import TotalBalanceBox from "@/components/ui/TotalBalanceBox";
 import RightSideBar from "@/components/ui/RightSideBar"
-import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { requireLoggedInUser } from "@/lib/actions/user.actions";
 import { getAccounts, getAccount } from "@/lib/actions/bank.actions";
 import  RecentTransactions from "@/components/ui/RecentTransactions";
 
 const Home = async ({searchParams}: SearchParamProps) => {
     const {id, page} = await searchParams;
     const currentPage = parseInt(page as string) || 1; 
-    const loggedIn = await getLoggedInUser();
+    const loggedIn = await requireLoggedInUser();
     const accounts = await getAccounts({userId: loggedIn.$id});
 
     if(!accounts) return; 

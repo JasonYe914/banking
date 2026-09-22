@@ -2,6 +2,7 @@
 import { Client, ID, Query } from "node-appwrite";
 import { createAdminClient } from "./appwrite";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { createSessionClient } from "./appwrite";
 import { extractCustomerIdFromUrl, parseStringify } from "../utils";
 import { Products, CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum } from "plaid";
@@ -119,18 +120,26 @@ export const signUp = async({password, ...userData}: SignUpParams) => {
     }
 }
 
+// Returns the logged-in user, or null when there is no valid session.
 export const getLoggedInUser = async () => {
   try {
     const { account } = await createSessionClient();
     const result = await account.get();
     const user = await getUserInfo({userId: result.$id});
 
-
     return parseStringify(user);
-  } catch (error) {
-    console.error("account.get() failed:", error);
-    throw error;
+  } catch {
+    // No cookie, or an expired/invalid session. Callers decide what to do.
+    return null;
   }
+};
+
+// Like getLoggedInUser, but sends logged-out visitors to the sign-in page.
+// redirect() throws, so it must stay outside any try/catch.
+export const requireLoggedInUser = async () => {
+  const user = await getLoggedInUser();
+  if (!user) redirect("/sign-in");
+  return user;
 };
 
 export const logoutAccount = async() => {
