@@ -84,7 +84,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       bankId: bank.$id,
     });
 
-    const transferTransactions = transferTransactionsData.documents.map(
+    const transferTransactions = (transferTransactionsData?.documents ?? []).map(
       (transferData: Transaction) => ({
         id: transferData.$id,
         name: transferData.name!,
@@ -186,14 +186,24 @@ export const getTransactions = async ({
     }
 
     return parseStringify(transactions);
-  } catch (error: any) {
-    // Plaid returns ADDITIONAL_CONSENT_REQUIRED when the item was linked
-    // without the "transactions" product. Fall back to no Plaid transactions
-    // so the page still renders with the transfer rows from Appwrite.
-    console.error(
-      "An error occurred while getting transactions:",
-      error?.response?.data ?? error
-    );
+  } catch (error) {
+    // Axios/Plaid errors serialize to "{}" when Next.js replays server logs in
+    // the browser, so pull out the fields that actually explain the failure.
+    const plaidError = (
+      error as { response?: { data?: { error_code?: string; error_message?: string } } }
+    )?.response?.data;
+    const details = plaidError?.error_code
+      ? `${plaidError.error_code}: ${plaidError.error_message}`
+      : error instanceof Error ? error.message : String(error);
+
+    // PRODUCT_NOT_READY is expected right after linking: Plaid is still
+    // pulling the initial transaction history. Fall back to no Plaid
+    // transactions so the page still renders with the Appwrite transfer rows.
+    if (plaidError?.error_code === "PRODUCT_NOT_READY") {
+      console.warn("Plaid transactions not ready yet, retry shortly:", details);
+    } else {
+      console.error("An error occurred while getting transactions:", details);
+    }
     return [];
   }
 };

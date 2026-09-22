@@ -249,7 +249,7 @@
 
   /* Mobile nav */
   .mobilenav-sheet {
-    @apply flex h-[calc(100vh-72px)] flex-col justify-between overflow-y-auto;
+    @apply flex min-h-0 flex-1 flex-col justify-between overflow-y-auto;
   }
 
   .mobilenav-sheet_close {
@@ -266,7 +266,7 @@
   }
 
   .plaidlink-default {
-    @apply flex !justify-start cursor-pointer gap-3 rounded-lg !bg-transparent flex-row;
+    @apply flex w-full cursor-pointer items-center justify-center !gap-3 rounded-lg !border-0 !bg-transparent !h-auto py-1 md:!p-3 2xl:!p-4 xl:!justify-start;
   }
 
   /* Auth */
@@ -360,7 +360,7 @@
   }
 
   .footer_image-mobile {
-    @apply relative size-5;
+    @apply relative size-5 shrink-0;
   }
 
   /* Sidebar */

@@ -273,3 +273,20 @@ export const getBank = async ({documentId}: getBankProps) => {
         console.log("Error getting banks", error);
     }
 }
+
+export const getBankByAccountId = async ({accountId}: getBankByAccountIdProps) => {
+    try{
+        const { tablesDB } = await createAdminClient();
+        const bank = await tablesDB.listRows({
+            databaseId: DATABASE_ID!,
+            tableId: BANK_COLLECTION_ID!,
+            queries: [Query.equal("accountId", [accountId])],
+        })
+
+        if (bank.total !== 1) return null;
+
+        return parseStringify(bank.rows[0]);
+    }catch(error){
+        console.log("Error getting bank by account id", error);
+    }
+}

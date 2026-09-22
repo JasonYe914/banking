@@ -31,21 +31,21 @@ const Home = async ({searchParams}: SearchParamProps) => {
                     />
                     <TotalBalanceBox 
                         accounts={[accountData]}
-                        totalBanks={accounts?.totalBanks || 0}
-                        totalCurrentBalance={accounts?.totalCurrentBalance || 0}
+                        totalBanks={accounts?.totalBanks}
+                        totalCurrentBalance={accounts?.totalCurrentBalance}
                     />
                 </header>
                 <RecentTransactions 
-                    accounts={accounts?.data || []}
-                    transactions={account?.transactions || []}
+                    accounts={accounts?.data}
+                    transactions={account?.transaction}
                     appwriteItemId={appwriteItemId}
                     page={currentPage}
                 />
             </div> 
             <RightSideBar 
                 user={loggedIn}
-                transactions={accounts?.transactions || []}
-                banks={accounts?.data?.slice(0,2) || []}
+                transactions={accounts?.transactions}
+                banks={accounts?.data?.slice(0,2)}
             /> 
         </section>
     )
