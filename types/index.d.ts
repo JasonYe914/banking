@@ -194,7 +194,7 @@ declare interface AuthFormProps {
 
 declare interface BankDropdownProps {
   accounts: Account[];
-  setValue?: import("react-hook-form").UseFormSetValue<import("react-hook-form").FieldValues>;
+  setValue?: (name: "senderBank", value: string) => void;
   otherStyles?: string;
 }
 

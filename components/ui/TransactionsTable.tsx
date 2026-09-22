@@ -7,9 +7,28 @@ import {
     TableRow,
     TableCaption,
 } from "@/components/ui/table"
+import { transactionCategoryStyles } from "@/constants";
 
-import { formatAmount, getTransactionStatus, removeSpecialCharacters } from "@/lib/utils";
+import { cn, formatAmount, getTransactionStatus, removeSpecialCharacters } from "@/lib/utils";
 import { formatDateTime } from "@/lib/utils";
+
+const CategoryBadge = ({category}: CategoryBadgeProps) => {
+
+    const {
+        borderColor, 
+        backgroundColor,
+        textColor,
+        chipBackgroundColor, 
+    } = transactionCategoryStyles[category as keyof typeof transactionCategoryStyles] 
+    || transactionCategoryStyles.default; 
+
+    return (
+        <div className={cn('category-badge', borderColor, chipBackgroundColor)}>
+            <div className={cn('size-2 rounded-full', backgroundColor)}/>
+            <p className={cn('text-[12px] font-medium', textColor)}>{category}</p>
+        </div>
+    )
+}
 
 const transactionsTable = ({transactions}: TransactionTableProps) => {
     return (
@@ -32,6 +51,7 @@ const transactionsTable = ({transactions}: TransactionTableProps) => {
                     const isDebit = t.type === "debit"; 
                     const isCredit = t.type === "credit";
 
+
                     return (
                         <TableRow key={t.id} className={`${isDebit || amount[0] === "-" ? 
                             "bg-[#fffbfa]" : "bg-[#f6fef9]"} !over:bg-none !border-b-default`}>
@@ -42,20 +62,21 @@ const transactionsTable = ({transactions}: TransactionTableProps) => {
                                     </h1>
                                 </div>
                             </TableCell>
-                            <TableCell className="pl-2 pr-10 font-semibold">
+                            <TableCell className={`pl-2 pr-10 font-semibold ${isDebit || amount[0] === "-" ? 
+                                'text-[#f04438]' : 'text-[#039855]'}` }>
                                 {isDebit ? `-${amount}` : isCredit ? amount:amount}
                             </TableCell>
                             <TableCell>
-                                {status} 
+                                <CategoryBadge category={status} />
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="min-w-32">
                                 {formatDateTime(new Date(t.date)).dateTime}
                             </TableCell>
-                            <TableCell className="max-md:hidden">
+                            <TableCell className="max-md:hidden capitalize min-w-24">
                                 {t.paymentChannel}
                             </TableCell>
                             <TableCell className="max-md:hidden">
-                                {t.category}
+                                <CategoryBadge category={t.category} />
                             </TableCell>
                         </TableRow>
                     )
