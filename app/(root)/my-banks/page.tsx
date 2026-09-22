@@ -1,10 +1,10 @@
 import HeaderBox from "@/components/ui/HeaderBox";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { requireLoggedInUser } from "@/lib/actions/user.actions";
 import { getAccounts } from "@/lib/actions/bank.actions";
 import BankCard from "@/components/ui/BankCard";
 
 const myBanks = async () => {
-    const loggedIn = await getLoggedInUser();
+    const loggedIn = await requireLoggedInUser();
     const accounts = await getAccounts({userId: loggedIn.$id});
     return (
         <section className="flex">

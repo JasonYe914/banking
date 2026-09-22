@@ -1,11 +1,11 @@
 import HeaderBox from '@/components/ui/HeaderBox'
 import PaymentTransferForm from '@/components/ui/PaymentTransferForm'
 import { getAccounts } from '@/lib/actions/bank.actions';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
+import { requireLoggedInUser } from '@/lib/actions/user.actions';
 import React from 'react'
 
 const Transfer = async () => {
-  const loggedIn = await getLoggedInUser();
+  const loggedIn = await requireLoggedInUser();
   const accounts = await getAccounts({ 
     userId: loggedIn.$id 
   })
